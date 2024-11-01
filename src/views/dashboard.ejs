@@ -1,0 +1,108 @@
+<%- include('layout/header', { title: 'Dashboard' }) %>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- System Info -->
+    <div class="bg-gray-800 p-6 rounded-lg">
+        <h2 class="text-xl font-semibold mb-4">System Information</h2>
+        <div class="space-y-2" id="systemInfo"></div>
+    </div>
+
+    <!-- CPU Usage -->
+    <div class="bg-gray-800 p-6 rounded-lg">
+        <h2 class="text-xl font-semibold mb-4">CPU Usage</h2>
+        <div class="text-4xl font-bold mb-2" id="cpuLoad">0%</div>
+        <div class="space-y-2" id="cpuCores"></div>
+    </div>
+
+    <!-- Memory Usage -->
+    <div class="bg-gray-800 p-6 rounded-lg">
+        <h2 class="text-xl font-semibold mb-4">Memory Usage</h2>
+        <div class="space-y-2" id="memoryInfo"></div>
+    </div>
+
+    <!-- Disk Usage -->
+    <div class="bg-gray-800 p-6 rounded-lg col-span-full">
+        <h2 class="text-xl font-semibold mb-4">Disk Usage</h2>
+        <div id="diskUsage" class="space-y-4"></div>
+    </div>
+</div>
+
+<script>
+const socket = io();
+
+socket.on('basicStats', (stats) => {
+    // System Info
+    const systemHtml = `
+        <div class="grid grid-cols-2 gap-2">
+            <div>OS:</div><div>${stats.os.distro} (${stats.os.platform})</div>
+            <div>Version:</div><div>${stats.os.release}</div>
+            <div>Architecture:</div><div>${stats.os.arch}</div>
+            <div>Manufacturer:</div><div>${stats.system.manufacturer}</div>
+            <div>Model:</div><div>${stats.system.model}</div>
+        </div>
+    `;
+    document.getElementById('systemInfo').innerHTML = systemHtml;
+
+    // CPU
+    document.getElementById('cpuLoad').textContent = `${stats.cpu.load}%`;
+    const coresHtml = stats.cpu.cores.map((load, i) => `
+        <div class="mb-2">
+            <div class="flex justify-between mb-1">
+                <span>Core ${i + 1}:</span>
+                <span>${load}%</span>
+            </div>
+            <div class="w-full bg-gray-700 rounded-full h-2">
+                <div class="bg-blue-600 h-2 rounded-full" style="width: ${load}%"></div>
+            </div>
+        </div>
+    `).join('');
+    document.getElementById('cpuCores').innerHTML = coresHtml;
+
+    // Memory
+    const memoryHtml = `
+        <div class="mb-2">
+            <div class="flex justify-between mb-1">
+                <span>Memory Usage:</span>
+                <span>${stats.memory.used}/${stats.memory.total} GB</span>
+            </div>
+            <div class="w-full bg-gray-700 rounded-full h-2">
+                <div class="bg-green-600 h-2 rounded-full" 
+                     style="width: ${(stats.memory.used / stats.memory.total * 100).toFixed(1)}%">
+                </div>
+            </div>
+        </div>
+        <div class="mb-2">
+            <div class="flex justify-between mb-1">
+                <span>Swap Usage:</span>
+                <span>${stats.memory.swapUsed}/${stats.memory.swapTotal} GB</span>
+            </div>
+            <div class="w-full bg-gray-700 rounded-full h-2">
+                <div class="bg-yellow-600 h-2 rounded-full" 
+                     style="width: ${(stats.memory.swapUsed / stats.memory.swapTotal * 100).toFixed(1)}%">
+                </div>
+            </div>
+        </div>
+    `;
+    document.getElementById('memoryInfo').innerHTML = memoryHtml;
+
+    // Disk
+    const diskHtml = stats.disk.map(drive => `
+        <div class="mb-4">
+            <div class="flex justify-between mb-1">
+                <span>${drive.fs}</span>
+                <span>${drive.use}%</span>
+            </div>
+            <div class="w-full bg-gray-700 rounded-full h-2.5">
+                <div class="bg-blue-600 h-2.5 rounded-full" style="width: ${drive.use}%"></div>
+            </div>
+            <div class="flex justify-between text-sm mt-1">
+                <span>Used: ${drive.used} GB</span>
+                <span>Total: ${drive.size} GB</span>
+            </div>
+        </div>
+    `).join('');
+    document.getElementById('diskUsage').innerHTML = diskHtml;
+});
+</script>
+
+<%- include('layout/footer') %> 

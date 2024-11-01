@@ -1,0 +1,76 @@
+</main>
+
+<footer class="bg-gray-800 shadow-lg mt-auto">
+    <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <div class="flex items-center space-x-4">
+                <div class="text-sm text-gray-400">
+                    System Uptime: <span id="systemUptime">0:00:00</span>
+                </div>
+                <div class="text-sm text-gray-400">
+                    Last Update: <span id="lastUpdate">-</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="text-sm text-gray-400" id="socketStatus">
+                    Status: Connected
+                </div>
+                <button onclick="reconnectSocket()" 
+                        class="px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 rounded-md transition-colors hidden" 
+                        id="reconnectButton">
+                    Reconnect
+                </button>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Update system uptime
+    function formatUptime(seconds) {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // Socket connection handling
+    const socket = io();
+    let reconnectAttempts = 0;
+
+    socket.on('connect', () => {
+        document.getElementById('socketStatus').textContent = 'Status: Connected';
+        document.getElementById('socketStatus').classList.remove('text-red-400');
+        document.getElementById('socketStatus').classList.add('text-gray-400');
+        document.getElementById('reconnectButton').classList.add('hidden');
+        reconnectAttempts = 0;
+    });
+
+    socket.on('disconnect', () => {
+        document.getElementById('socketStatus').textContent = 'Status: Disconnected';
+        document.getElementById('socketStatus').classList.remove('text-gray-400');
+        document.getElementById('socketStatus').classList.add('text-red-400');
+        document.getElementById('reconnectButton').classList.remove('hidden');
+    });
+
+    socket.on('basicStats', () => {
+        document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+    });
+
+    function reconnectSocket() {
+        if (reconnectAttempts < 5) {
+            socket.connect();
+            reconnectAttempts++;
+        }
+    }
+
+    // Update uptime every second
+    setInterval(() => {
+        const uptimeElement = document.getElementById('systemUptime');
+        const currentUptime = parseInt(uptimeElement.getAttribute('data-uptime') || '0');
+        uptimeElement.setAttribute('data-uptime', (currentUptime + 1).toString());
+        uptimeElement.textContent = formatUptime(currentUptime + 1);
+    }, 1000);
+</script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Real-time system monitoring dashboard">
+    <meta name="theme-color" content="#1F2937">
+    <title>System Monitor - <%= title %></title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@heroicons/react@2.0.18/24/outline/esm/index.css">
+    <style>
+        .nav-link {
+            @apply px-3 py-2 rounded-md text-sm font-medium transition-colors;
+        }
+        .nav-link:hover {
+            @apply bg-gray-700 text-white;
+        }
+        .nav-link.active {
+            @apply bg-gray-900 text-white;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+    <header class="bg-gray-800 shadow-lg">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <svg class="h-8 w-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                    </svg>
+                    <h1 class="text-xl font-bold">System Monitor</h1>
+                </div>
+                
+                <div class="hidden md:block">
+                    <div class="flex items-center space-x-4">
+                        <a href="/" class="nav-link <%= title === 'Dashboard' ? 'active' : '' %>">
+                            Dashboard
+                        </a>
+                        <a href="/network" class="nav-link <%= title === 'Network' ? 'active' : '' %>">
+                            Network
+                        </a>
+                        <a href="/processes" class="nav-link <%= title === 'Processes' ? 'active' : '' %>">
+                            Processes
+                        </a>
+                        <a href="/temperature" class="nav-link <%= title === 'Temperature' ? 'active' : '' %>">
+                            Temperature
+                        </a>
+                    </div>
+                </div>
+
+                <div class="md:hidden">
+                    <button type="button" onclick="toggleMobileMenu()" 
+                            class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile menu -->
+            <div class="md:hidden hidden" id="mobileMenu">
+                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                    <a href="/" class="nav-link block <%= title === 'Dashboard' ? 'active' : '' %>">
+                        Dashboard
+                    </a>
+                    <a href="/network" class="nav-link block <%= title === 'Network' ? 'active' : '' %>">
+                        Network
+                    </a>
+                    <a href="/processes" class="nav-link block <%= title === 'Processes' ? 'active' : '' %>">
+                        Processes
+                    </a>
+                    <a href="/temperature" class="nav-link block <%= title === 'Temperature' ? 'active' : '' %>">
+                        Temperature
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8">
+    <script>
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+    </script>

@@ -1,0 +1,56 @@
+<%- include('layout/header', { title: 'Temperature' }) %>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Main Temperature -->
+    <div class="bg-gray-800 p-6 rounded-lg">
+        <h2 class="text-xl font-semibold mb-4">CPU Temperature</h2>
+        <div class="text-center">
+            <div id="mainTemp" class="text-6xl font-bold mb-4">0°C</div>
+            <div id="maxTemp" class="text-xl text-gray-400">Max: 0°C</div>
+        </div>
+    </div>
+
+    <!-- Core Temperatures -->
+    <div class="bg-gray-800 p-6 rounded-lg">
+        <h2 class="text-xl font-semibold mb-4">Core Temperatures</h2>
+        <div id="coreTemps" class="space-y-4"></div>
+    </div>
+</div>
+
+<script>
+const socket = io();
+
+function getTemperatureColor(temp) {
+    if (temp < 50) return 'bg-green-600';
+    if (temp < 70) return 'bg-yellow-600';
+    return 'bg-red-600';
+}
+
+socket.on('temperatureStats', (stats) => {
+    // Main Temperature
+    document.getElementById('mainTemp').textContent = `${stats.main}°C`;
+    document.getElementById('maxTemp').textContent = `Max: ${stats.max}°C`;
+
+    // Core Temperatures
+    if (stats.cores && stats.cores.length > 0) {
+        const coresHtml = stats.cores.map((temp, i) => `
+            <div class="mb-2">
+                <div class="flex justify-between mb-1">
+                    <span>Core ${i + 1}:</span>
+                    <span>${temp}°C</span>
+                </div>
+                <div class="w-full bg-gray-700 rounded-full h-2">
+                    <div class="${getTemperatureColor(temp)} h-2 rounded-full" 
+                         style="width: ${(temp / 100 * 100).toFixed(1)}%">
+                    </div>
+                </div>
+            </div>
+        `).join('');
+        document.getElementById('coreTemps').innerHTML = coresHtml;
+    } else {
+        document.getElementById('coreTemps').innerHTML = '<p class="text-center text-gray-400">No core temperature data available</p>';
+    }
+});
+</script>
+
+<%- include('layout/footer') %>

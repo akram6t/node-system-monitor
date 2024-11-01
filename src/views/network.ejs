@@ -1,0 +1,53 @@
+<%- include('layout/header', { title: 'Network' }) %>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Network Interfaces -->
+    <div class="bg-gray-800 p-6 rounded-lg">
+        <h2 class="text-xl font-semibold mb-4">Network Interfaces</h2>
+        <div id="networkInterfaces" class="space-y-4"></div>
+    </div>
+
+    <!-- Network Stats -->
+    <div class="bg-gray-800 p-6 rounded-lg">
+        <h2 class="text-xl font-semibold mb-4">Network Statistics</h2>
+        <div id="networkStats" class="space-y-4"></div>
+    </div>
+</div>
+
+<script>
+const socket = io();
+
+socket.on('networkStats', (stats) => {
+    // Network Interfaces
+    const interfacesHtml = stats.interfaces.map(iface => `
+        <div class="bg-gray-700 p-4 rounded-lg">
+            <h3 class="font-semibold mb-2">${iface.iface}</h3>
+            <div class="grid grid-cols-2 gap-2 text-sm">
+                <div>Type:</div><div>${iface.type}</div>
+                <div>IPv4:</div><div>${iface.ip4 || 'N/A'}</div>
+                <div>IPv6:</div><div>${iface.ip6 || 'N/A'}</div>
+                <div>MAC:</div><div>${iface.mac}</div>
+                <div>Speed:</div><div>${iface.speed} Mbps</div>
+                <div>DHCP:</div><div>${iface.dhcp ? 'Yes' : 'No'}</div>
+            </div>
+        </div>
+    `).join('');
+    document.getElementById('networkInterfaces').innerHTML = interfacesHtml;
+
+    // Network Stats
+    const statsHtml = stats.stats.map(stat => `
+        <div class="bg-gray-700 p-4 rounded-lg">
+            <h3 class="font-semibold mb-2">${stat.interface}</h3>
+            <div class="grid grid-cols-2 gap-2">
+                <div>Download:</div><div>${stat.rxSec} KB/s</div>
+                <div>Upload:</div><div>${stat.txSec} KB/s</div>
+                <div>Total Download:</div><div>${stat.rxBytes} MB</div>
+                <div>Total Upload:</div><div>${stat.txBytes} MB</div>
+            </div>
+        </div>
+    `).join('');
+    document.getElementById('networkStats').innerHTML = statsHtml;
+});
+</script>
+
+<%- include('layout/footer') %>

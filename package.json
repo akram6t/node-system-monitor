@@ -1,0 +1,39 @@
+{
+    "name": "bun-typescript-project",
+    "version": "1.0.0",
+    "description": "A Bun project with TypeScript",
+    "main": "src/index.ts",
+    "type": "module",
+    "scripts": {
+        "start": "bun run src/index.ts",
+        "dev": "bun --watch run src/index.ts",
+        "build": "bun build ./src/index.ts --outdir ./dist",
+        "test": "bun test",
+        "lint": "eslint . --ext .ts",
+        "format": "prettier --write \"src/**/*.ts\""
+    },
+    "keywords": [
+        "bun",
+        "typescript"
+    ],
+    "author": "Your Name",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/bun": "^1.1.11",
+        "@types/express": "^5.0.0",
+        "@typescript-eslint/eslint-plugin": "^5.0.0",
+        "@typescript-eslint/parser": "^5.0.0",
+        "dotenv": "^16.4.5",
+        "ejs": "^3.1.10",
+        "eslint": "^8.0.0",
+        "prettier": "^2.8.0",
+        "typescript": "^4.9.0"
+    },
+    "dependencies": {
+        "@formbricks/js": "^3.0.1",
+        "cors": "^2.8.5",
+        "express": "^4.21.1",
+        "socket.io": "^4.8.1",
+        "systeminformation": "^5.23.5"
+    }
+}
