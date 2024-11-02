@@ -1,52 +1,113 @@
-<%- include('layout/header', { title: 'Network' }) %>
+<!-- /src/views/network.ejs -->
+<%- include('layout/header', { title: 'Network Network' }) %>
 
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <!-- Network Interfaces -->
-    <div class="bg-gray-800 p-6 rounded-lg">
-        <h2 class="text-xl font-semibold mb-4">Network Interfaces</h2>
-        <div id="networkInterfaces" class="space-y-4"></div>
-    </div>
+<div class="bg-gradient-to-br from-gray-900 to-gray-800 p-6 text-white">
+  <div class="container mx-auto">
+    <h1 class="text-3xl font-semibold mb-8 text-center tracking-wide">Network Insights</h1>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Network Interfaces Card -->
+      <div class="bg-gray-800 rounded-2xl shadow-2xl border border-gray-700 p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-bold text-blue-400">Network Interfaces</h2>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.785-3.521A8.5 8.5 0 0112 5.5a8.5 8.5 0 018.785 11.0127M16 12h.01" />
+          </svg>
+        </div>
+        
+        <div id="network-interfaces" class="space-y-6">
+          <!-- Interfaces will be dynamically populated here -->
+        </div>
+      </div>
 
-    <!-- Network Stats -->
-    <div class="bg-gray-800 p-6 rounded-lg">
-        <h2 class="text-xl font-semibold mb-4">Network Statistics</h2>
-        <div id="networkStats" class="space-y-4"></div>
+      <!-- Network Statistics Card -->
+      <div class="bg-gray-800 rounded-2xl shadow-2xl border border-gray-700 p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-bold text-green-400">Network Statistics</h2>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
+        
+        <div id="network-stats" class="space-y-6">
+          <!-- Stats will be dynamically populated here -->
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <script>
-const socket = io();
-
 socket.on('networkStats', (stats) => {
-    // Network Interfaces
-    const interfacesHtml = stats.interfaces.map(iface => `
-        <div class="bg-gray-700 p-4 rounded-lg">
-            <h3 class="font-semibold mb-2">${iface.iface}</h3>
-            <div class="grid grid-cols-2 gap-2 text-sm">
-                <div>Type:</div><div>${iface.type}</div>
-                <div>IPv4:</div><div>${iface.ip4 || 'N/A'}</div>
-                <div>IPv6:</div><div>${iface.ip6 || 'N/A'}</div>
-                <div>MAC:</div><div>${iface.mac}</div>
-                <div>Speed:</div><div>${iface.speed} Mbps</div>
-                <div>DHCP:</div><div>${iface.dhcp ? 'Yes' : 'No'}</div>
-            </div>
+  // Update Network Interfaces
+  const interfacesContainer = document.getElementById('network-interfaces');
+  interfacesContainer.innerHTML = stats.interfaces.map(iface => `
+    <div class="bg-gray-700 rounded-xl p-4 shadow-md">
+      <div class="flex justify-between items-center mb-3">
+        <h3 class="text-lg font-semibold text-blue-300">${iface.iface}</h3>
+        <span class="text-sm ${iface.operstate === 'up' ? 'text-green-400' : 'text-red-400'}">${iface.operstate}</span>
+      </div>
+      <div class="grid grid-cols-2 gap-2 text-sm">
+        <div class="flex flex-col">
+          <span class="text-gray-400">IPv4</span>
+          <span>${iface.ip4}</span>
         </div>
-    `).join('');
-    document.getElementById('networkInterfaces').innerHTML = interfacesHtml;
+        <div class="flex flex-col">
+          <span class="text-gray-400">IPv6</span>
+          <span>${iface.ip6}</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-gray-400">MAC</span>
+          <span>${iface.mac}</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-gray-400">Type</span>
+          <span>${iface.type}</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-gray-400">Speed</span>
+          <span>${iface.speed || 'N/A'}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
 
-    // Network Stats
-    const statsHtml = stats.stats.map(stat => `
-        <div class="bg-gray-700 p-4 rounded-lg">
-            <h3 class="font-semibold mb-2">${stat.interface}</h3>
-            <div class="grid grid-cols-2 gap-2">
-                <div>Download:</div><div>${stat.rxSec} KB/s</div>
-                <div>Upload:</div><div>${stat.txSec} KB/s</div>
-                <div>Total Download:</div><div>${stat.rxBytes} MB</div>
-                <div>Total Upload:</div><div>${stat.txBytes} MB</div>
-            </div>
+  // Update Network Stats
+  const statsContainer = document.getElementById('network-stats');
+  statsContainer.innerHTML = stats.stats.map(stat => `
+    <div class="bg-gray-700 rounded-xl p-4 shadow-md">
+      <div class="flex justify-between items-center mb-3">
+        <h3 class="text-lg font-semibold text-green-300">${stat.interface}</h3>
+        <span class="text-sm text-gray-400">Traffic</span>
+      </div>
+      <div class="grid grid-cols-2 gap-2 text-sm">
+        <div class="flex flex-col">
+          <span class="text-gray-400">Rx</span>
+          <span>${stat.rxBytes} MB</span>
         </div>
-    `).join('');
-    document.getElementById('networkStats').innerHTML = statsHtml;
+        <div class="flex flex-col">
+          <span class="text-gray-400">Tx</span>
+          <span>${stat.txBytes} MB</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-gray-400">Rx/s</span>
+          <span>${stat.rxSec} KB/s</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-gray-400">Tx/s</span>
+          <span>${stat.txSec} KB/s</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-gray-400">Errors</span>
+          <span>${stat.rxErrors + stat.txErrors}</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-gray-400">Dropped</span>
+          <span>${stat.rxDropped + stat.txDropped}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
 });
 </script>
 

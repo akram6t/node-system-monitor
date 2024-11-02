@@ -1,55 +1,97 @@
-<%- include('layout/header', { title: 'Temperature' }) %>
+<!-- /src/views/temperature.ejs -->
+<%- include('layout/header', { title: 'System Temperature' }) %>
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <!-- Main Temperature -->
-    <div class="bg-gray-800 p-6 rounded-lg">
-        <h2 class="text-xl font-semibold mb-4">CPU Temperature</h2>
-        <div class="text-center">
-            <div id="mainTemp" class="text-6xl font-bold mb-4">0°C</div>
-            <div id="maxTemp" class="text-xl text-gray-400">Max: 0°C</div>
+<div class="bg-gradient-to-br from-gray-900 to-gray-800 p-6 text-white">
+  <div class="container mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- Main Temperature Card -->
+      <div class="bg-gray-800 rounded-2xl shadow-2xl border border-gray-700 p-6 flex flex-col">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center space-x-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m3.343-5.657l-.707-.707m12.728 12.728l.707.707M6.343 6.343l-.707-.707m12.728 12.728l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+            </svg>
+            <h2 class="text-2xl font-bold text-red-400">CPU Temperature</h2>
+          </div>
+          <div class="flex items-center space-x-2 text-sm">
+            <span class="bg-yellow-600 px-3 py-1 rounded-full shadow-md">
+              Max: <span id="max-temp" class="ml-1">-°C</span>
+            </span>
+          </div>
         </div>
-    </div>
 
-    <!-- Core Temperatures -->
-    <div class="bg-gray-800 p-6 rounded-lg">
-        <h2 class="text-xl font-semibold mb-4">Core Temperatures</h2>
-        <div id="coreTemps" class="space-y-4"></div>
+        <div class="flex-grow flex items-center justify-center">
+          <div id="main-temp" class="text-6xl font-bold text-center">
+            <span class="text-red-400">-</span>
+            <span class="text-sm align-top">°C</span>
+          </div>
+        </div>
+
+        <div class="mt-4 text-center">
+          <div id="temp-status" class="text-sm text-gray-400">
+            Temperature Status
+          </div>
+        </div>
+      </div>
+
+      <!-- Core Temperatures Card -->
+      <div class="bg-gray-800 rounded-2xl shadow-2xl border border-gray-700 p-6">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center space-x-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 01-4.176-3.97L9.872 6.817a2 2 0 00-1.176-1.598 2 2 0 00-1.042-.25h-1.5a2 2 0 00-2 2v.72a2 2 0 001.506 1.946l2.83.706a6 6 0 014.892 4.013l.194.84a2 2 0 001.882 1.542h2.562a2 2 0 002-1.6l.183-1.02a2 2 0 00-1.546-2.346z" />
+            </svg>
+            <h2 class="text-2xl font-bold text-blue-400">Core Temperatures</h2>
+          </div>
+        </div>
+
+        <div id="core-temps" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          <!-- Core temperatures will be dynamically populated here -->
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <script>
-const socket = io();
-
-function getTemperatureColor(temp) {
-    if (temp < 50) return 'bg-green-600';
-    if (temp < 70) return 'bg-yellow-600';
-    return 'bg-red-600';
-}
-
 socket.on('temperatureStats', (stats) => {
-    // Main Temperature
-    document.getElementById('mainTemp').textContent = `${stats.main}°C`;
-    document.getElementById('maxTemp').textContent = `Max: ${stats.max}°C`;
+  // Update main temperature
+  const mainTempElement = document.getElementById('main-temp');
+  const maxTempElement = document.getElementById('max-temp');
+  const tempStatusElement = document.getElementById('temp-status');
 
-    // Core Temperatures
-    if (stats.cores && stats.cores.length > 0) {
-        const coresHtml = stats.cores.map((temp, i) => `
-            <div class="mb-2">
-                <div class="flex justify-between mb-1">
-                    <span>Core ${i + 1}:</span>
-                    <span>${temp}°C</span>
-                </div>
-                <div class="w-full bg-gray-700 rounded-full h-2">
-                    <div class="${getTemperatureColor(temp)} h-2 rounded-full" 
-                         style="width: ${(temp / 100 * 100).toFixed(1)}%">
-                    </div>
-                </div>
-            </div>
-        `).join('');
-        document.getElementById('coreTemps').innerHTML = coresHtml;
-    } else {
-        document.getElementById('coreTemps').innerHTML = '<p class="text-center text-gray-400">No core temperature data available</p>';
-    }
+  // Format main temperature
+  mainTempElement.innerHTML = `
+    <span class="${
+      stats.main > 80 ? 'text-red-500' : 
+      stats.main > 60 ? 'text-yellow-400' : 
+      'text-green-400'
+    }">${stats.main.toFixed(1)}</span>
+    <span class="text-sm align-top">°C</span>
+  `;
+
+  // Update max temperature
+  maxTempElement.textContent = `${stats.max.toFixed(1)}°C`;
+
+  // Update temperature status
+  tempStatusElement.innerHTML = stats.main > 80 ? 
+    '<span class="text-red-400">High Temperature Warning!</span>' :
+    stats.main > 60 ? 
+    '<span class="text-yellow-400">Elevated Temperature</span>' :
+    '<span class="text-green-400">Normal Temperature</span>';
+
+  // Update core temperatures
+  const coreTemps = document.getElementById('core-temps');
+  coreTemps.innerHTML = stats.cores.map((temp, index) => `
+    <div class="bg-gray-700 p-4 rounded-lg text-center transform transition-all hover:scale-105">
+      <div class="text-gray-400 text-sm mb-2">Core ${index + 1}</div>
+      <div class="text-xl font-bold ${
+        temp > 80 ? 'text-red-500' : 
+        temp > 60 ? 'text-yellow-400' : 
+        'text-green-400'
+      }">${temp.toFixed(1)}°C</div>
+    </div>
+  `).join('');
 });
 </script>
 

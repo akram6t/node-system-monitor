@@ -1,29 +1,44 @@
-</main>
-
-<footer class="bg-gray-800 shadow-lg mt-auto">
-    <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div class="flex items-center space-x-4">
-                <div class="text-sm text-gray-400">
-                    System Uptime: <span id="systemUptime">0:00:00</span>
+<!DOCTYPE html>
+<html lang="en">
+<!-- Previous head and body content remains the same until main -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+    </main>
+    
+    <footer class="bg-gray-800/50 backdrop-blur-md shadow-xl border-t border-gray-700/30 mt-auto">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                <div class="flex flex-col sm:flex-row items-center sm:space-x-6 space-y-2 sm:space-y-0">
+                    <div class="flex items-center space-x-2 text-sm text-gray-300">
+                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span class="font-medium">System Uptime:</span>
+                        <span id="systemUptime" class="font-mono bg-gray-700/50 px-2 py-0.5 rounded">0:00:00</span>
+                    </div>
+                    <div class="flex items-center space-x-2 text-sm text-gray-300">
+                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        <span class="font-medium">Last Update:</span>
+                        <span id="lastUpdate" class="font-mono bg-gray-700/50 px-2 py-0.5 rounded">-</span>
+                    </div>
                 </div>
-                <div class="text-sm text-gray-400">
-                    Last Update: <span id="lastUpdate">-</span>
+                <div class="flex items-center space-x-4">
+                    <div id="socketStatus" class="flex items-center space-x-2 text-sm">
+                        <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                        <span class="text-gray-300 font-medium">Status: Connected</span>
+                    </div>
+                    <button onclick="reconnectSocket()"
+                            class="hidden px-4 py-1.5 text-sm font-medium bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 shadow-lg"
+                            id="reconnectButton">
+                        Reconnect
+                    </button>
                 </div>
-            </div>
-            <div class="flex items-center space-x-4">
-                <div class="text-sm text-gray-400" id="socketStatus">
-                    Status: Connected
-                </div>
-                <button onclick="reconnectSocket()" 
-                        class="px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 rounded-md transition-colors hidden" 
-                        id="reconnectButton">
-                    Reconnect
-                </button>
             </div>
         </div>
-    </div>
-</footer>
+    </footer>
+</body>
+</html>
 
 <script>
     // Update system uptime

@@ -4,47 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Real-time system monitoring dashboard">
-    <meta name="theme-color" content="#1F2937">
+    <meta name="theme-color" content="#111827">
     <title>System Monitor - <%= title %></title>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@heroicons/react@2.0.18/24/outline/esm/index.css">
     <style>
         .nav-link {
-            @apply px-3 py-2 rounded-md text-sm font-medium transition-colors;
+            @apply px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ease-in-out ;
         }
         .nav-link:hover {
-            @apply bg-gray-700 text-white;
+            @apply hover:bg-gradient-to-r hover:from-blue-500 hover:to-indigo-600 hover:text-white hover:transform hover:scale-105;
         }
         .nav-link.active {
-            @apply bg-gray-900 text-white;
+            @apply bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-lg;
         }
     </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen flex flex-col">
-    <header class="bg-gray-800 shadow-lg">
+<body class="bg-gradient-to-br from-gray-900 to-gray-800 text-gray-100 min-h-screen flex flex-col">
+    <header class="bg-gray-800/50 backdrop-blur-md shadow-2xl">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <svg class="h-8 w-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                <div class="flex items-center space-x-4">
+                    <svg class="w-12 h-12" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="techGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#6366F1;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="50" cy="50" r="45" fill="url(#techGradient)" />
+                        <path d="M30 35 Q50 25, 70 35 L70 65 Q50 75, 30 65 Z" fill="white" />
+                        <circle cx="50" cy="50" r="10" fill="white" />
                     </svg>
-                    <h1 class="text-xl font-bold">System Monitor</h1>
+                    <h1 class="text-2xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-indigo-600">System Monitor</h1>
                 </div>
                 
                 <div class="hidden md:block">
-                    <div class="flex items-center space-x-4">
-                        <a href="/" class="nav-link <%= title === 'Dashboard' ? 'active' : '' %>">
+                    <div class="flex items-center space-x-2">
+                        <a href="/" class="nav-link <%= title === 'System Dashboard' ? 'active' : '' %>">
                             Dashboard
                         </a>
-                        <a href="/network" class="nav-link <%= title === 'Network' ? 'active' : '' %>">
+                        <a href="/network" class="nav-link <%= title === 'System Network' ? 'active' : '' %>">
                             Network
                         </a>
-                        <a href="/processes" class="nav-link <%= title === 'Processes' ? 'active' : '' %>">
+                        <a href="/processes" class="nav-link <%= title === 'System Processes' ? 'active' : '' %>">
                             Processes
                         </a>
-                        <a href="/temperature" class="nav-link <%= title === 'Temperature' ? 'active' : '' %>">
+                        <a href="/temperature" class="nav-link <%= title === 'System Temperature' ? 'active' : '' %>">
                             Temperature
                         </a>
                     </div>
@@ -52,7 +59,7 @@
 
                 <div class="md:hidden">
                     <button type="button" onclick="toggleMobileMenu()" 
-                            class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none">
+                            class="p-2 rounded-md text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
@@ -62,7 +69,7 @@
 
             <!-- Mobile menu -->
             <div class="md:hidden hidden" id="mobileMenu">
-                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <div class="px-2 pt-2 pb-3 space-y-2 sm:px-3">
                     <a href="/" class="nav-link block <%= title === 'Dashboard' ? 'active' : '' %>">
                         Dashboard
                     </a>
@@ -82,8 +89,11 @@
 
     <main class="flex-grow container mx-auto px-4 py-8">
     <script>
+        const socket = new io();
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');
             menu.classList.toggle('hidden');
         }
     </script>
+</body>
+</html>

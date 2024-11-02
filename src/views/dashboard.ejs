@@ -1,108 +1,104 @@
-<%- include('layout/header', { title: 'Dashboard' }) %>
+<!-- /src/views/dashboard.ejs -->
+<%- include('layout/header', { title: 'System Dashboard' }) %>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <!-- System Info -->
-    <div class="bg-gray-800 p-6 rounded-lg">
-        <h2 class="text-xl font-semibold mb-4">System Information</h2>
-        <div class="space-y-2" id="systemInfo"></div>
-    </div>
+<div class="bg-gradient-to-br from-gray-900 to-gray-800 p-6 text-white">
+  <div class="container mx-auto">
+    <h1 class="text-3xl font-semibold mb-8 text-center tracking-wide">System Performance</h1>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- CPU Card -->
+      <div class="bg-gray-800 rounded-2xl shadow-2xl border border-gray-700 p-6 transform transition-all hover:scale-105">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-2xl font-bold text-blue-400">CPU</h2>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <div id="cpu-stats" class="space-y-3">
+          <div class="flex justify-between border-b border-gray-700 pb-2">
+            <span class="text-gray-400">Load</span>
+            <span id="cpu-load" class="font-semibold text-green-400">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-700 pb-2">
+            <span class="text-gray-400">Brand</span>
+            <span id="cpu-brand" class="font-semibold">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-400">Cores</span>
+            <span id="cpu-cores" class="font-semibold">-</span>
+          </div>
+        </div>
+      </div>
 
-    <!-- CPU Usage -->
-    <div class="bg-gray-800 p-6 rounded-lg">
-        <h2 class="text-xl font-semibold mb-4">CPU Usage</h2>
-        <div class="text-4xl font-bold mb-2" id="cpuLoad">0%</div>
-        <div class="space-y-2" id="cpuCores"></div>
-    </div>
+      <!-- Memory Card -->
+      <div class="bg-gray-800 rounded-2xl shadow-2xl border border-gray-700 p-6 transform transition-all hover:scale-105">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-2xl font-bold text-purple-400">Memory</h2>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+          </svg>
+        </div>
+        <div id="memory-stats" class="space-y-3">
+          <div class="flex justify-between border-b border-gray-700 pb-2">
+            <span class="text-gray-400">Total</span>
+            <span id="memory-total" class="font-semibold text-purple-300">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-700 pb-2">
+            <span class="text-gray-400">Used</span>
+            <span id="memory-used" class="font-semibold text-yellow-400">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-400">Free</span>
+            <span id="memory-free" class="font-semibold text-green-400">-</span>
+          </div>
+        </div>
+      </div>
 
-    <!-- Memory Usage -->
-    <div class="bg-gray-800 p-6 rounded-lg">
-        <h2 class="text-xl font-semibold mb-4">Memory Usage</h2>
-        <div class="space-y-2" id="memoryInfo"></div>
+      <!-- Battery Card -->
+      <div class="bg-gray-800 rounded-2xl shadow-2xl border border-gray-700 p-6 transform transition-all hover:scale-105">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-2xl font-bold text-green-400">Battery</h2>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+        <div id="battery-stats" class="space-y-3">
+          <div class="flex justify-between border-b border-gray-700 pb-2">
+            <span class="text-gray-400">Status</span>
+            <span id="battery-status" class="font-semibold">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-700 pb-2">
+            <span class="text-gray-400">Percent</span>
+            <span id="battery-percent" class="font-semibold text-blue-300">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-400">Time Remaining</span>
+            <span id="battery-time" class="font-semibold text-yellow-400">-</span>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <!-- Disk Usage -->
-    <div class="bg-gray-800 p-6 rounded-lg col-span-full">
-        <h2 class="text-xl font-semibold mb-4">Disk Usage</h2>
-        <div id="diskUsage" class="space-y-4"></div>
-    </div>
+  </div>
 </div>
 
 <script>
-const socket = io();
-
 socket.on('basicStats', (stats) => {
-    // System Info
-    const systemHtml = `
-        <div class="grid grid-cols-2 gap-2">
-            <div>OS:</div><div>${stats.os.distro} (${stats.os.platform})</div>
-            <div>Version:</div><div>${stats.os.release}</div>
-            <div>Architecture:</div><div>${stats.os.arch}</div>
-            <div>Manufacturer:</div><div>${stats.system.manufacturer}</div>
-            <div>Model:</div><div>${stats.system.model}</div>
-        </div>
-    `;
-    document.getElementById('systemInfo').innerHTML = systemHtml;
-
-    // CPU
-    document.getElementById('cpuLoad').textContent = `${stats.cpu.load}%`;
-    const coresHtml = stats.cpu.cores.map((load, i) => `
-        <div class="mb-2">
-            <div class="flex justify-between mb-1">
-                <span>Core ${i + 1}:</span>
-                <span>${load}%</span>
-            </div>
-            <div class="w-full bg-gray-700 rounded-full h-2">
-                <div class="bg-blue-600 h-2 rounded-full" style="width: ${load}%"></div>
-            </div>
-        </div>
-    `).join('');
-    document.getElementById('cpuCores').innerHTML = coresHtml;
-
-    // Memory
-    const memoryHtml = `
-        <div class="mb-2">
-            <div class="flex justify-between mb-1">
-                <span>Memory Usage:</span>
-                <span>${stats.memory.used}/${stats.memory.total} GB</span>
-            </div>
-            <div class="w-full bg-gray-700 rounded-full h-2">
-                <div class="bg-green-600 h-2 rounded-full" 
-                     style="width: ${(stats.memory.used / stats.memory.total * 100).toFixed(1)}%">
-                </div>
-            </div>
-        </div>
-        <div class="mb-2">
-            <div class="flex justify-between mb-1">
-                <span>Swap Usage:</span>
-                <span>${stats.memory.swapUsed}/${stats.memory.swapTotal} GB</span>
-            </div>
-            <div class="w-full bg-gray-700 rounded-full h-2">
-                <div class="bg-yellow-600 h-2 rounded-full" 
-                     style="width: ${(stats.memory.swapUsed / stats.memory.swapTotal * 100).toFixed(1)}%">
-                </div>
-            </div>
-        </div>
-    `;
-    document.getElementById('memoryInfo').innerHTML = memoryHtml;
-
-    // Disk
-    const diskHtml = stats.disk.map(drive => `
-        <div class="mb-4">
-            <div class="flex justify-between mb-1">
-                <span>${drive.fs}</span>
-                <span>${drive.use}%</span>
-            </div>
-            <div class="w-full bg-gray-700 rounded-full h-2.5">
-                <div class="bg-blue-600 h-2.5 rounded-full" style="width: ${drive.use}%"></div>
-            </div>
-            <div class="flex justify-between text-sm mt-1">
-                <span>Used: ${drive.used} GB</span>
-                <span>Total: ${drive.size} GB</span>
-            </div>
-        </div>
-    `).join('');
-    document.getElementById('diskUsage').innerHTML = diskHtml;
+  // Update CPU stats
+  document.getElementById('cpu-load').textContent = `${stats.cpu.load}%`;
+  document.getElementById('cpu-brand').textContent = stats.cpu.brand;
+  document.getElementById('cpu-cores').textContent = `${stats.cpu.physicalCores} physical / ${stats.cpu.logicalCores} logical`;
+  
+  // Update Memory stats
+  document.getElementById('memory-total').textContent = `${stats.memory.total} GB`;
+  document.getElementById('memory-used').textContent = `${stats.memory.used} GB`;
+  document.getElementById('memory-free').textContent = `${stats.memory.free} GB`;
+  
+  // Update Battery stats
+  const batteryStatus = stats.battery.isCharging ? 'Charging' : 'Discharging';
+  document.getElementById('battery-status').textContent = batteryStatus;
+  document.getElementById('battery-percent').textContent = `${stats.battery.percent}%`;
+  document.getElementById('battery-time').textContent = `${Math.round(stats.battery.timeRemaining / 60)} minutes`;
 });
 </script>
 
-<%- include('layout/footer') %> 
+<%- include('layout/footer') %>

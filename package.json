@@ -21,10 +21,10 @@
     "devDependencies": {
         "@types/bun": "^1.1.11",
         "@types/express": "^5.0.0",
+        "@types/express-ejs-layouts": "^2.5.4",
         "@typescript-eslint/eslint-plugin": "^5.0.0",
         "@typescript-eslint/parser": "^5.0.0",
         "dotenv": "^16.4.5",
-        "ejs": "^3.1.10",
         "eslint": "^8.0.0",
         "prettier": "^2.8.0",
         "typescript": "^4.9.0"
@@ -32,7 +32,9 @@
     "dependencies": {
         "@formbricks/js": "^3.0.1",
         "cors": "^2.8.5",
+        "ejs": "^3.1.10",
         "express": "^4.21.1",
+        "express-ejs-layouts": "^2.5.1",
         "socket.io": "^4.8.1",
         "systeminformation": "^5.23.5"
     }

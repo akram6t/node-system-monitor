@@ -4,6 +4,7 @@ import { createServer } from 'http';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import 'dotenv/config';
+import expressLayouts from 'express-ejs-layouts'; // Add this line
 import * as SystemInfo from './services/systeminfo';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -12,8 +13,11 @@ const server = createServer(app);
 const io = new Server(server);
 const port = process.env.PORT || 3000;
 
+// Set up EJS and layouts
 app.set('view engine', 'ejs');
 app.set('views', join(__dirname, 'views'));
+// app.use(expressLayouts); // Add this line
+// app.set('layout', 'layout/'); // Add this line
 app.use(express.static(join(__dirname, '../public')));
 
 // Routes
